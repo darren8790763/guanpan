@@ -888,7 +888,7 @@ function addStock(){
   save();
   ["f-ticker","f-shares","f-cost"].forEach(id=>document.getElementById(id).value="");
   document.getElementById("add-panel").classList.remove("show");
-  fetchStock(t).then(d=>{if(d){live[t]=d;const p=portfolio.find(x=>x.ticker===t);if(p)p.name=d.name||t;renderPortfolio();renderDashboard();}});
+  fetchStock(t).then(d=>{if(d){live[t]=d;const p=portfolio.find(x=>x.ticker===t);if(p&&p.name===p.ticker)p.name=d.name||t;renderPortfolio();renderDashboard();}});
   renderPortfolio();
 }
 
@@ -1215,7 +1215,8 @@ async function init(){
     if(d){
       live[s.ticker]=d;
       const p=portfolio.find(x=>x.ticker===s.ticker);
-      if(p&&d.name)p.name=d.name;
+      // 只有當名稱還是預設代號時才用 Yahoo 回傳的名稱，保留使用者設定的中文名
+      if(p && p.name===p.ticker) p.name=d.name||p.ticker;
     }
   }));
   renderDashboard();
